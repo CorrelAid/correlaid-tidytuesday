@@ -1,0 +1,12 @@
+---
+title: "Authors"
+date: "2016-05-05T21:48:51-07:00"
+output: html_document
+draft: true
+---
+
+Meet the authors of the posts so far: 
+
+# Paul 
+
+Paul studies 

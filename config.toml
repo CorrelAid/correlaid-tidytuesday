@@ -22,11 +22,12 @@ enableEmoji = true
     
 
 [Author]
-  name = "Frie Preu"
-  email = "frie.p@correlaid.org"
+  name = "CorrelAid"
+  email = "info@correlaid.org"
   github = "CorrelAid"
   twitter = "CorrelAid"
   website = "correlaid.org"
+
   
 [Params]
   homeTitle = "TidyTuesday @ CorrelAid" # Set a different text for the header on the home page
