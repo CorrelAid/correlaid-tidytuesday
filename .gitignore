@@ -36,3 +36,5 @@ vignettes/*.pdf
 rsconnect/
 public/
 .Rproj.user
+
+.DS_Store
