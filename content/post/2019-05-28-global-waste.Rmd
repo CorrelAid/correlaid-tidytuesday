@@ -12,7 +12,7 @@ Until we've figured out a nice way to include author information: Follow Paul on
 - [Twitter](https://twitter.com/plmeiners)
 - [GitHub](https://github.com/pmeiners)
 
-
+ 
 ------------------
 
 
