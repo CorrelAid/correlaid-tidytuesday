@@ -1,0 +1,202 @@
+---
+title: "Global Waste Exploratory Analysis"
+output: html_document
+author: "Paul Meiners"
+date: 2019-05-28
+categories: ["R"]
+tags: ["rstats", "tidytuesday"]
+---
+
+Until we've figured out a nice way to include author information: Follow Paul on...
+
+- [Twitter](https://twitter.com/plmeiners)
+- [GitHub](https://github.com/pmeiners)
+
+ 
+------------------
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+In this short post we start exploring the Global plastic waste dataset provided for the tidytuesday challange: https://github.com/rfordatascience/tidytuesday/tree/master/data/2019/2019-05-21
+
+
+```{r, warning=FALSE, message=FALSE}
+library(tidyverse)
+theme_set(theme_minimal())
+library(ggrepel) # to move labels away from information in plots
+library(viridis) # an easy to read color sheme 
+library(scales) # to easily change the scales on the heatmaps
+library(plotly)
+```
+
+# Cleaning
+
+Loading raw data from github
+```{r, warning=FALSE, message=FALSE}
+coast_vs_waste <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-05-21/coastal-population-vs-mismanaged-plastic.csv")
+mismanaged_vs_gdp <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-05-21/per-capita-mismanaged-plastic-waste-vs-gdp-per-capita.csv")
+waste_vs_gdp <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-05-21/per-capita-plastic-waste-vs-gdp-per-capita.csv")
+```
+
+Combine the three data sets
+```{r, warning=FALSE}
+data_all <- coast_vs_waste %>% 
+  left_join(mismanaged_vs_gdp, by = c("Code", "Year")) %>%
+  left_join(waste_vs_gdp, by = c("Code", "Year"))
+```
+
+Rename columns (there are better ways to do this. You should check out the 'janitor::clean_names' function)
+```{r, warning=FALSE}
+names(data_all)[4:9] <- c("waste_mis_total", "coast_pop", "total_pop", "cntry", "waste_mis_pcap", "gdp_pcap")
+names(data_all)[12] <- c("waste_total_pcap")
+```
+
+Select only necessary columns
+```{r, warning=FALSE}
+data_clean <- select(data_all, waste_mis_total, cntry, waste_mis_pcap, coast_pop, gdp_pcap, waste_total_pcap, total_pop, Year, Code)
+data_clean <- mutate(data_clean, gdp = total_pop*gdp_pcap) %>%
+  mutate(waste_total_total = waste_total_pcap*total_pop)
+```
+
+
+
+# Exploratory data analysis
+
+
+```{r, warning=FALSE, message=FALSE}
+ggplot(data = subset(data_clean, !is.na(coast_pop)), aes(x = coast_pop)) + 
+  geom_bar(stat = "bin")
+```
+
+Most countries have no costal population.
+
+```{r, warning=FALSE, message=FALSE}
+ggplot(data = subset(data_clean, !is.na(waste_mis_pcap)), aes(x = waste_mis_pcap)) + 
+  geom_bar(stat = "bin")
+```
+
+Mismanaged waste per capita also follows a logarithmic distribution, a small number of countries has very high waste per capita.
+
+```{r, warning=FALSE}
+ggplot(data = subset(data_clean, !is.na(waste_mis_total)), aes(x = waste_mis_total, y = coast_pop)) + 
+  geom_point()+
+  geom_smooth()
+```
+
+As it turns out, most global mismanaged plastic waste is produced by a few countries. 
+However, a high coastal population does not automatically mean, that there is a lot of mismanaged waste.
+
+
+
+## Mismanaged waste per capita and coastal population
+```{r, warning=FALSE}
+ggplot(data = subset(data_clean, !is.na(waste_mis_pcap)), aes(x = log1p(waste_mis_pcap), y = log(coast_pop))) + 
+  geom_point(aes(color = gdp_pcap), size = 3) +
+  geom_text_repel(aes(label = ifelse(log1p(waste_mis_pcap)>0.12,as.character(cntry),'')),
+                   box.padding = 0.35, 
+                   point.padding = 0.5,
+                   segment.color = 'grey50') +
+  scale_color_viridis()
+```
+
+Looking at the mismanaged waste per capita and the amount of coastal population, we can identify a number of island countries with very high levels of mismanaged waste per capita. Generally, these countries have rather low GDP per capita levels. High GDP per capita countries appear to have comparatively low levels of mismanaged waste per capita.
+
+
+```{r, warning=FALSE}
+ggplot(data=subset(data_clean, !is.na(waste_mis_pcap)), aes(x = log(gdp_pcap), y = log(waste_mis_total))) + 
+  geom_point(aes(color = waste_mis_pcap), size = 3) +
+  geom_text_repel(aes(label = ifelse(log1p(waste_mis_pcap)>0.12,as.character(cntry),'')),
+                  box.padding = 0.35, 
+                  point.padding = 0.5,
+                  segment.color = 'grey50') +
+  geom_smooth()+
+  scale_color_viridis()
+```
+
+The countries with high waste per capita are distributed across the spectrum, suggesting other reasons for their high waste levels. Maybe Island countries are just more affected (per capita) by waste that others produce.
+The relationship between gdp and waste is nonlinear. Higher GDP per capita seems to increase total waste for the first half of the distriution. For the second half of the distribution, higher GDP per capita is negatively associated with total waste.
+
+
+# Integrating time effects
+
+We only have data on total waste and mismanaged waste for 2010. But the time-series data on population and GDP growth can still be interesting. Maybe we can divide countries into "stalbe, low GDP/population "fast growing" and "stable high GDP/population" categories?
+The theory being that a period of high GDP or population could create higher levels of mismanaged waste in 2010 because waste control can't "keep up" with the new demand. 
+
+First we create the changes in percentage compared to last year:
+GDP per capita change compared to last year:
+```{r, warning=FALSE}
+data_clean <- data_clean %>%
+  filter(!is.na(gdp_pcap)) %>%
+  group_by(cntry) %>%
+  arrange(Year, .by_group = TRUE) %>%
+  mutate(gdp_pcap_change = (gdp_pcap/lag(gdp_pcap) - 1) * 100)
+```
+
+Population change compared to last year:
+```{r, warning=FALSE}
+data_clean <- data_clean %>%
+  filter(!is.na(total_pop)) %>%
+  group_by(cntry) %>%
+  arrange(Year, .by_group = TRUE) %>%
+  mutate(total_pop_change = (total_pop/lag(total_pop) - 1) * 100)
+```
+
+
+Now we can create a Heatmap of the changes in population and GDP growth. Then we sort the heatmap for mismanaged waste in total or for mismanaged waste per capita. If there are any obvious trends, they could be visible without having to use any inferential statistics. The human brain is quite good at pattern recognition.
+
+We need to replace missing observations of waste in order to sort the heatmap.
+
+```{r, warning=FALSE}
+data_time <- data_clean %>% 
+  group_by(cntry) %>% 
+  fill(waste_mis_pcap, waste_mis_total, waste_total_total) %>% #default direction down
+  fill(waste_mis_pcap, waste_mis_total, waste_total_total, .direction = "up")
+```
+
+A heatmap filled by population change and sorted by mismanaged waste per capita. You can mostly ignore the labels on the Y axis. If youre looking closely, you'll see that the sorting worked. The small island countries with high mismanaged waste per capita appear at the bottom.
+```{r, warning=FALSE}
+p <- ggplot(data = data_time, aes(x = Year, y = reorder(cntry, -waste_mis_pcap), z = total_pop_change)) + 
+  geom_tile(aes(fill = total_pop_change)) +
+  scale_fill_viridis(limits = c(-3, 10),oob = scales::squish)
+ggplotly(p, height = 2000)
+```
+
+
+A heatmap filled by population change and sorted by total mismanaged waste
+```{r, warning=FALSE}
+p <- ggplot(data = data_time, aes(x = Year, y = reorder(cntry, -waste_total_total), z = gdp_pcap_change)) + 
+  geom_tile(aes(fill = total_pop_change)) +
+  scale_fill_viridis(limits = c(-3, 10),oob = scales::squish)
+ggplotly(p, height = 2000)
+
+```
+
+
+A heatmap  filled by gdp change and sorted by mismanaged waste per capita
+```{r, warning=FALSE}
+p <- ggplot(data = data_time, aes(x = Year, y = reorder(cntry, -waste_mis_pcap), z = gdp_pcap_change)) + 
+  geom_tile(aes(fill = gdp_pcap_change)) +
+  scale_fill_viridis(limits = c(-30, 30),oob = scales::squish)
+ggplotly(p, height = 2000)
+
+```
+
+A heatmap filled by gdp change and sorted by total mismanaged waste
+```{r, warning=FALSE}
+p <- ggplot(data = data_time, aes(x = Year, y = reorder(cntry, -waste_total_total), z = gdp_pcap_change)) + 
+  geom_tile(aes(fill = gdp_pcap_change)) +
+  scale_fill_viridis(limits = c(-30, 30),oob = scales::squish)
+ggplotly(p, height = 2000)
+```
+
+The heatmaps do look pretty, but I don't think we can clearly see the pattern hypothesized before. The only striking effect is the change in GDP from 2008 to 2009. I would assume that is the global financial crisis that left it's mark on the data.
+
+
+
+
+
+
+
