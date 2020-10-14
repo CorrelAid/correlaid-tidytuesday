@@ -1,4 +1,4 @@
-The Datasaurus Dataset
+The Datasaurus 🦖
 ================
 
 ## TidyTuesday 2020-10-13
