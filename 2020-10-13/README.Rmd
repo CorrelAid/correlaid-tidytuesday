@@ -103,8 +103,7 @@ library(PerformanceAnalytics)
 <details><summary>Click here for the code</summary>
 <p>
 
-
-```r
+<pre>
 panel_grid <- function(grid = "XY", on_top = FALSE) {
   ret <- theme(panel.ontop = on_top)
   if (grid == TRUE || is.character(grid)) {
@@ -158,7 +157,7 @@ panel_grid <- function(grid = "XY", on_top = FALSE) {
   }
   ret
 }
-```
+</pre>
 </p>
 </details>
 ```{r echo=FALSE}
