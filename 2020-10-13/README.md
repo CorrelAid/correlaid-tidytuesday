@@ -90,10 +90,10 @@ an <- a +
      transition_time(n)+
   shadow_mark(exclude_layer = c(2, 3))
 # animate(an, renderer = gifski_renderer()) # commented out for knitting
-# gganimate::anim_save("2020-10-13.gif") # commented out for knitting 
+# gganimate::anim_save("reveal_mean.gif") # commented out for knitting 
 ```
 
-![](2020-10-13.gif)
+![](reveal_mean.gif)
 
 <blockquote class="twitter-tweet">
 
@@ -117,6 +117,12 @@ so i plotted it to convince myself. :)
 </blockquote>
 
 <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+**Update**: Long (see next contribution) did this amazing *cyberpunk*
+edit - for even better *laser beams* effects\! Amazing theme, come
+through.
+
+![](reveal_mean_cyberpunk.gif)
 
 ## A joy plot - oh joy\!
 
