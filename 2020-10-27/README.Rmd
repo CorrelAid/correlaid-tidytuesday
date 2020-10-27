@@ -1,0 +1,24 @@
+---
+title: "Canadian Wind Turbines 💨"
+output: github_document
+editor_options: 
+  chunk_output_type: console
+---
+
+# TidyTuesday 2020-10-27
+
+If you want to join the next CorrelAid TidyTuesday Meetup, make sure to sign up to our [Newsletter](https://correlaid.us12.list-manage.com/subscribe?u=b294bf2834adf5d89bdd2dd5a&id=915f3f3eff) or reach out to us on [Twitter](https://twitter.com/CorrelAid)!
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+```
+
+```{r Load, message=FALSE, warning=FALSE}
+library(tidyverse)
+library(tidytuesdayR)
+#library(fontawesome) # for knitting, install with devtools::install_github("rstudio/fontawesome")
+
+tt <- tt_load("2020-10-27")
+df_wind <- tt$`wind-turbine`
+```
