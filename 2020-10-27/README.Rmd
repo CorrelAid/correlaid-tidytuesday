@@ -17,8 +17,62 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r Load, message=FALSE, warning=FALSE}
 library(tidyverse)
 library(tidytuesdayR)
+library(ragg)
+library(sf)
 #library(fontawesome) # for knitting, install with devtools::install_github("rstudio/fontawesome")
 
-tt <- tt_load("2020-10-27")
+ttheme_set(theme_minimal(base_family = "Roboto Condensed"))
+
+t <- tt_load("2020-10-27")
 df_wind <- tt$`wind-turbine`
 ```
+
+```{r eig.width = 9, fig.height = 6}
+ggplot(df_wind, aes(province_territory)) +
+  geom_bar() +
+  coord_flip()
+
+df_wind %>% 
+  count(province_territory) %>% 
+  ggplot(aes(forcats::fct_reorder(province_territory, n), n)) +
+  geom_col() +
+  coord_flip()
+
+df_wind %>% 
+  count(project_name) %>% 
+  filter(n > 50) %>% 
+  ggplot(aes(forcats::fct_reorder(project_name, n), n)) +
+  geom_col() +
+  coord_flip()
+```
+
+
+``{r}
+sf_cind <- 
+  df_wind %>% 
+  st_as_sf(coords = c("longitude", "latitude"), 
+           crs = "+proj=longlat +datum=WGS84 +no_defs") %>% 
+  st_transform(crs = s"+proj=lcc +lon_0=-90 +lat_1=33 +lat_2=45"
+
+
+sf_canada <-
+  rnaturalearth::ne_countries(scale = 110, country = "Canada", 
+                              returnclass = "sf") %>% 
+  st_transform(crs = st_crs(sf_wind))
+ggplot(sf_canada) +
+  geom_sf(color = NA, fill = "grey92") +
+  geom_sf(data = sf_wind, color = "#1D994E", alpha = .1, 
+          size = 2, shape = 21, fill = NA)
+
+ggplot(df_wind, aes(longitude, latitude)) +
+  geom_hex()
+
+``
+
+T**ipps'n'Tricks:
+**
+* `GGally::ggpairs()` for a quick EDA
+* `rnaturalearth::ne_countries()` and `rnaturalearth::ne_states()` for shape files of countries
+* `{ggforce}` package for many many cool things in ggplot2
+* `forcats::fct_reorder()` and `forcats::fct_lump()` to reorder factors based on variables or merge those of low interest into a "other" class
+* `theme(plot.title.position = "plot", plot.caption.position = "plot")` since `{ggplot2}` v3.0.0 to justify the title, subtitle and caption with the plot area not the panel border
