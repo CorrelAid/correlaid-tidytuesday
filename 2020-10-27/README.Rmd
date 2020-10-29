@@ -5,7 +5,7 @@ editor_options:
   chunk_output_type: console
 ---
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 library(fontawesome) # for knitting, install with devtools::install_github("rstudio/fontawesome")
 ```
 # TidyTuesday 2020-10-27
@@ -20,26 +20,34 @@ If you want to join the next CorrelAid TidyTuesday Meetup, make sure to sign up 
 library(tidyverse)
 library(tidytuesdayR)
 library(ragg)
-library(sf)
-library(ggplot2)
+
 theme_set(theme_minimal(base_family = "Roboto Condensed"))
+
 tt <- tt_load("2020-10-27")
 df_wind <- tt$`wind-turbine`
 ```
 
+You can quickly build a bar plot with `geom_bar(aes(x))`:
 
 ```{r fig.width = 9, fig.height = 6}
-
 ggplot(df_wind, aes(x = province_territory)) +
   geom_bar() +
   coord_flip()
+```
 
+Actually I prefer to caclulate the summaries first, then one uses `geom_col(aes(x, y))`. One good thing about it: You can easily sort the bars in an increasing order for better readability:
+
+```{r fig.width = 9, fig.height = 6}
 df_wind %>% 
   count(province_territory) %>% 
   ggplot(aes(forcats::fct_reorder(province_territory, n), n)) +
   geom_col() +
   coord_flip()
+```
 
+This way, one can also quickly filter by the number of wind turbines to focus on the most comon categories:
+
+```{r fig.width = 9, fig.height = 6}
 df_wind %>% 
   count(project_name) %>% 
   filter(n > 50) %>% 
@@ -48,7 +56,13 @@ df_wind %>%
   coord_flip()
 ```
 
+If you want to produce a map, turn the dataframe into an spatial object (preferably an `sf` object) and plot it afterwards with `geom_sf()`. Note that you don't need to specify `x` and `y`—ggplot's `geom_sf()` wnows that the coords are what it needs to plot. 
+
+Why not simply plot longitude versus latitude? Yes, you can do that but if you want to add a map underneath it needs to hvae the same projection, otherwise your points will not match with the map. Turning the data into a spatial object allows to reproject (change the projection of/transform) the data, e.g. into the [Lambert Conformal Conic projection](https://proj.org/operations/projections/lcc.html) that is often used for Canada and the US:
+
 ```{r}
+library(sf)
+
 sf_wind <- 
   df_wind %>% 
   st_as_sf(coords = c("longitude", "latitude"), 
@@ -64,12 +78,16 @@ ggplot(sf_canada) +
   geom_sf(color = NA, fill = "grey92") +
   geom_sf(data = sf_wind, color = "#1D994E", alpha = .1, 
           size = 2, shape = 21, fill = NA)
+```
 
+Density maps are a quick solution to deal with oveprlotting (as it's the case here). It is very simple to make a hex-bin density map in one line with `geom_hex()`:
+
+```{r}
 ggplot(df_wind, aes(longitude, latitude)) +
   geom_hex()
 ```
 
-**Tips'n'Tricks:**
+### Tips'n'Tricks:
 
 * `GGally::ggpairs()` for a quick EDA
 * `rnaturalearth::ne_countries()` and `rnaturalearth::ne_states()` for shape files of countries

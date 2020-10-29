@@ -17,9 +17,9 @@ or reach out to us on [Twitter](https://twitter.com/CorrelAid)\!
 library(tidyverse)
 library(tidytuesdayR)
 library(ragg)
-library(sf)
-library(ggplot2)
+
 theme_set(theme_minimal(base_family = "Roboto Condensed"))
+
 tt <- tt_load("2020-10-27")
 ```
 
@@ -30,6 +30,8 @@ tt <- tt_load("2020-10-27")
 df_wind <- tt$`wind-turbine`
 ```
 
+You can quickly build a bar plot with `geom_bar(aes(x))`:
+
 ``` r
 ggplot(df_wind, aes(x = province_territory)) +
   geom_bar() +
@@ -37,6 +39,10 @@ ggplot(df_wind, aes(x = province_territory)) +
 ```
 
 ![](README_files/figure-gfm/unnamed-chunk-1-1.png)<!-- -->
+
+Actually I prefer to caclulate the summaries first, then one uses
+`geom_col(aes(x, y))`. One good thing about it: You can easily sort the
+bars in an increasing order for better readability:
 
 ``` r
 df_wind %>% 
@@ -46,7 +52,10 @@ df_wind %>%
   coord_flip()
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-1-2.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
+
+This way, one can also quickly filter by the number of wind turbines to
+focus on the most comon categories:
 
 ``` r
 df_wind %>% 
@@ -57,9 +66,24 @@ df_wind %>%
   coord_flip()
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-1-3.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
+
+If you want to produce a map, turn the dataframe into an spatial object
+(preferably an `sf` object) and plot it afterwards with `geom_sf()`.
+Note that you don’t need to specify `x` and `y`—ggplot’s `geom_sf()`
+wnows that the coords are what it needs to plot.
+
+Why not simply plot longitude versus latitude? Yes, you can do that but
+if you want to add a map underneath it needs to hvae the same
+projection, otherwise your points will not match with the map. Turning
+the data into a spatial object allows to reproject (change the
+projection of/transform) the data, e.g. into the [Lambert Conformal
+Conic projection](https://proj.org/operations/projections/lcc.html) that
+is often used for Canada and the US:
 
 ``` r
+library(sf)
+
 sf_wind <- 
   df_wind %>% 
   st_as_sf(coords = c("longitude", "latitude"), 
@@ -77,16 +101,20 @@ ggplot(sf_canada) +
           size = 2, shape = 21, fill = NA)
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
+
+Density maps are a quick solution to deal with oveprlotting (as it’s the
+case here). It is very simple to make a hex-bin density map in one line
+with `geom_hex()`:
 
 ``` r
 ggplot(df_wind, aes(longitude, latitude)) +
   geom_hex()
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-2-2.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
 
-**Tips’n’Tricks:**
+### Tips’n’Tricks:
 
   - `GGally::ggpairs()` for a quick EDA
   - `rnaturalearth::ne_countries()` and `rnaturalearth::ne_states()` for
@@ -230,7 +258,7 @@ witu %>%
       scale_y_continuous(expand = c(0, 0))
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
 
 ``` r
       NULL
@@ -297,21 +325,13 @@ province_capacities <- turbines %>%
   distinct(province_territory, project_name, capacity) %>% # dirty
   group_by(province_territory) %>% 
   summarize(sum_capacity = round(sum(capacity), 2))
-```
 
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-
-``` r
 # number of turbines and number of projects
 province_ns <- turbines %>% 
   group_by(province_territory) %>% 
   summarize(n_projects = n_distinct(project_name),
          n_turbines = n())
-```
 
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-
-``` r
 # join the two datasets
 province_data <- left_join(province_ns, province_capacities, by = "province_territory")
 
@@ -327,12 +347,7 @@ province_data <- province_data %>%
 # join the data to the spatial file, and then join the polygons with the points
 turbines_sf <- left_join(turbines_sf, province_data, by = "province_territory")
 canada_turbines <- sf::st_join(turbines_sf, canada)
-```
 
-    ## although coordinates are longitude/latitude, st_intersects assumes that they are planar
-    ## although coordinates are longitude/latitude, st_intersects assumes that they are planar
-
-``` r
 # "aggregate" turbine spatial data to get the PRUID and province_territory variables in a province level dataset 
 sum(is.na(canada_turbines$PRUID)) # 4 turbines are not associated to a polygon
 ```
@@ -380,13 +395,6 @@ m <- mapdeck(token = key, style = mapdeck_style("dark"), pitch = 45 ) %>%
     layer_id = "turbines",
     tooltip = "tooltip"
   )
-```
-
-    ## Registered S3 method overwritten by 'jsonify':
-    ##   method     from    
-    ##   print.json jsonlite
-
-``` r
 # m # commented out for knitting
 ```
 
@@ -411,46 +419,15 @@ library(tmap)
 library(sf)
 ###data wind turbines###
 Wind_Turbine_Database_FGP <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-10-27/wind-turbine.csv')
-```
 
-    ## 
-    ## ── Column specification ────────────────────────────────────────────────────────
-    ## cols(
-    ##   objectid = col_double(),
-    ##   province_territory = col_character(),
-    ##   project_name = col_character(),
-    ##   total_project_capacity_mw = col_double(),
-    ##   turbine_identifier = col_character(),
-    ##   turbine_number_in_project = col_character(),
-    ##   turbine_rated_capacity_k_w = col_double(),
-    ##   rotor_diameter_m = col_double(),
-    ##   hub_height_m = col_double(),
-    ##   manufacturer = col_character(),
-    ##   model = col_character(),
-    ##   commissioning_date = col_character(),
-    ##   latitude = col_double(),
-    ##   longitude = col_double(),
-    ##   notes = col_character()
-    ## )
-
-``` r
 names(Wind_Turbine_Database_FGP)[2] <- "territory"
 names(Wind_Turbine_Database_FGP)[12] <- "year"
 
 Wind_Turbine_Database_FGP$year <- as.numeric(Wind_Turbine_Database_FGP$year)
-```
-
-    ## Warning: NAs introduced by coercion
-
-``` r
 df <- Wind_Turbine_Database_FGP %>%
   dplyr::group_by(territory, year) %>%
   dplyr::summarise(Freq = n())
-```
 
-    ## `summarise()` regrouping output by 'territory' (override with `.groups` argument)
-
-``` r
 ###add territories and provinces####
 # uncomment the following lines to download and unzip
 # url <- "https://download2.exploratory.io/maps/canada_provinces.zip"
@@ -459,12 +436,12 @@ df <- Wind_Turbine_Database_FGP %>%
 canada <- sf::st_read("canada_provinces/canada_provinces/canada_provinces.geojson")
 ```
 
-    ## Reading layer `canada_provinces' from data source `/Users/frie/dev/correlaid/websites/correlaid-tidytuesday/2020-10-27/canada_provinces/canada_provinces/canada_provinces.geojson' using driver `GeoJSON'
+    ## Reading layer `canada_provinces' from data source `C:\Users\DataVizard\Google Drive\Work\Programing\R\correlaid-tidytuesday\2020-10-27\canada_provinces\canada_provinces\canada_provinces.geojson' using driver `GeoJSON'
     ## Simple feature collection with 13 features and 7 fields
     ## geometry type:  MULTIPOLYGON
     ## dimension:      XY
     ## bbox:           xmin: -141.0181 ymin: 41.7297 xmax: -52.6194 ymax: 74
-    ## CRS:            4269
+    ## geographic CRS: NAD83
 
 ``` r
 names(canada)[3] <- "territory"
@@ -506,11 +483,6 @@ anim_can = tm_shape(canada) + tm_polygons(col = "lightblue") + tm_shape(carto_no
 library(ggplot2)
 library(dplyr)
 library(viridis)
-```
-
-    ## Loading required package: viridisLite
-
-``` r
 wind2 <- wind_turbine %>%
   filter(
     province_territory == "Alberta" |
@@ -537,7 +509,7 @@ ggplot(wind2,
         legend.position = "bottom")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
 
 ## A classic bar plot
 
@@ -555,11 +527,6 @@ wt_height <- wind_turbine  %>%
   mutate(commissioning_date = as.numeric(str_sub(commissioning_date, start=1, end=4))) %>%
   group_by(commissioning_date) %>%
   summarize(avg_hub_height = mean(hub_height_m))
-```
-
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-
-``` r
 ggplot(wt_height) +
   geom_col(aes(x = commissioning_date, y = avg_hub_height)) +
   labs(title = "Height of Wind Turbines", x = "Year", y = "Average Height (m)") +
