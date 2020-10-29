@@ -127,42 +127,51 @@ anim_turbines <- ne_states("Canada", returnclass = "sf") %>%
 ```
 ![](wind_turbines_over_years.gif)
 
-## A barplot showing all projects!
+## Number of wind turbines in the three most-wind-focused provinces
+**By Lisa Reiber** [`r fa("twitter", fill = "#1da1f2")`](https://twitter.com/lisa_reiber)
+
 ```{r message=FALSE}
 library(tidyverse)
+library(ggplot2)
+library(emoGG)
 witu <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-10-27/wind-turbine.csv')
 ```
 
-```{r fig.height=12}
-
-witu %>%
-      drop_na(project_name) %>%
-      drop_na(province_territory) %>%
-      count(project_name, province_territory) %>%
-      # filter(province_territory == "Ontario") %>%
-      mutate(cut_off = case_when(n < 50 ~ "lower than 50",
-                                 n >= 50 ~ "50 or more",
-                                 TRUE ~ NA_character_),
-             project_name_f = fct_reorder(project_name, n),
-             project_name_trunc = fct_lump_min(project_name_f, min = 50, w = n)) %>%
-      filter(n > 15) %>%
-      ggplot(aes(project_name_f, n, fill = province_territory)) +
-      geom_col() +
-      coord_flip() +
-      facet_wrap(~ cut_off,
-                 scales = "free",
-                 # space = "free",
-                 drop = TRUE, strip.position = "top") +
-      theme_minimal() +
-      theme(legend.position = "bottom",
-            legend.title = element_blank())+
-      # theme(legend.position = "top") +
+```{r fig.height=10}
+witu %>% 
+      drop_na(project_name) %>% 
+      drop_na(province_territory) %>% 
+      count(project_name, province_territory) %>% 
+      mutate(project_name_f = fct_reorder(project_name, n),
+             project_name_trunc = fct_lump_min(project_name_f, min = 50, w = n),
+             province_trunc = fct_collapse(province_territory,
+                                           Ontario = "Ontario",
+                                           Quebec = "Quebec",
+                                           Alberta = "Alberta",
+                                           other_level = "All Other Provinces")
+             ) %>% 
+      filter(n > 15) %>% 
+      ggplot(aes(project_name_f, n, group = province_trunc, label = project_name)) + 
+      geom_col(width = 0.3) +
+      emoGG::geom_emoji(emoji = "1f341") + #canada leaf
+      facet_grid(province_trunc ~.,
+                 scales = "free_x", 
+                 space = "free", 
+                 switch = "y"
+                 ) +
+      theme_light() +
+      theme(plot.title.position = "plot", #so cool <3
+            axis.text.x = element_blank(),
+            axis.ticks.x = element_blank(),
+            panel.grid.major = element_blank()
+            ) +
       labs(y = "",
            x = "",
-           fill = "Province",
-           title = "Number of Wind-Turbine Projects",
-           subtitle = "(more or less than 50 turbines) by Province in Canada"
-           )
+           title = "Comparing Wind-Turbine Projects in Alberta, Ontario and Quebec to the rest of Canada",
+           subtitle = "for projects with more than 15 turbines"
+           ) +
+      scale_fill_grey() +
+      scale_y_continuous(expand = c(0, 0))
       NULL
 ```
 
@@ -342,6 +351,39 @@ anim_can = tm_shape(canada) + tm_polygons(col = "lightblue") + tm_shape(carto_no
 
 ```
 ![](canadawindnr3.gif)
+
+## Do manufactureres have a province "preference"?
+**By Sylvi Rzepka**
+
+```{r}
+library(ggplot2)
+library(dplyr)
+library(viridis)
+wind2 <- wind_turbine %>%
+  filter(
+    province_territory == "Alberta" |
+      province_territory == "Ontario" |
+      province_territory == "Quebec"
+  ) %>%
+  mutate(manufacturer_fct = as.factor(manufacturer)) %>%
+  mutate(manufacturer_fct_o = fct_lump_min(manufacturer_fct, 19)) %>%
+  count(province_territory, manufacturer_fct_o)
+
+
+ggplot(wind2,
+         aes(fill = manufacturer_fct_o, x = n, y = province_territory)) +
+  geom_bar(stat = "identity") +
+  labs(
+    x = NULL,
+    y = "Province",
+    color = NULL,
+    title = "Manufacturers by Province"
+  ) +
+  scale_fill_viridis(discrete = T, direction = -1) +
+  theme_minimal() +
+  theme(legend.title = element_blank(),
+        legend.position = "bottom")
+```
 
 ## A classic bar plot 
 **By Daniela Vogler**

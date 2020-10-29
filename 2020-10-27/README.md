@@ -181,42 +181,53 @@ anim_turbines <- ne_states("Canada", returnclass = "sf") %>%
 
 ![](wind_turbines_over_years.gif)
 
-## A barplot showing all projects\!
+## Number of wind turbines in the three most-wind-focused provinces
+
+**By Lisa Reiber**
+[<svg style="height:0.8em;top:.04em;position:relative;fill:#1da1f2;" viewBox="0 0 512 512"><path d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253z"/></svg>](https://twitter.com/lisa_reiber)
 
 ``` r
 library(tidyverse)
+library(ggplot2)
+library(emoGG)
 witu <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-10-27/wind-turbine.csv')
 ```
 
 ``` r
-witu %>%
-      drop_na(project_name) %>%
-      drop_na(province_territory) %>%
-      count(project_name, province_territory) %>%
-      # filter(province_territory == "Ontario") %>%
-      mutate(cut_off = case_when(n < 50 ~ "lower than 50",
-                                 n >= 50 ~ "50 or more",
-                                 TRUE ~ NA_character_),
-             project_name_f = fct_reorder(project_name, n),
-             project_name_trunc = fct_lump_min(project_name_f, min = 50, w = n)) %>%
-      filter(n > 15) %>%
-      ggplot(aes(project_name_f, n, fill = province_territory)) +
-      geom_col() +
-      coord_flip() +
-      facet_wrap(~ cut_off,
-                 scales = "free",
-                 # space = "free",
-                 drop = TRUE, strip.position = "top") +
-      theme_minimal() +
-      theme(legend.position = "bottom",
-            legend.title = element_blank())+
-      # theme(legend.position = "top") +
+witu %>% 
+      drop_na(project_name) %>% 
+      drop_na(province_territory) %>% 
+      count(project_name, province_territory) %>% 
+      mutate(project_name_f = fct_reorder(project_name, n),
+             project_name_trunc = fct_lump_min(project_name_f, min = 50, w = n),
+             province_trunc = fct_collapse(province_territory,
+                                           Ontario = "Ontario",
+                                           Quebec = "Quebec",
+                                           Alberta = "Alberta",
+                                           other_level = "All Other Provinces")
+             ) %>% 
+      filter(n > 15) %>% 
+      ggplot(aes(project_name_f, n, group = province_trunc, label = project_name)) + 
+      geom_col(width = 0.3) +
+      emoGG::geom_emoji(emoji = "1f341") + #canada leaf
+      facet_grid(province_trunc ~.,
+                 scales = "free_x", 
+                 space = "free", 
+                 switch = "y"
+                 ) +
+      theme_light() +
+      theme(plot.title.position = "plot", #so cool <3
+            axis.text.x = element_blank(),
+            axis.ticks.x = element_blank(),
+            panel.grid.major = element_blank()
+            ) +
       labs(y = "",
            x = "",
-           fill = "Province",
-           title = "Number of Wind-Turbine Projects",
-           subtitle = "(more or less than 50 turbines) by Province in Canada"
-           )
+           title = "Comparing Wind-Turbine Projects in Alberta, Ontario and Quebec to the rest of Canada",
+           subtitle = "for projects with more than 15 turbines"
+           ) +
+      scale_fill_grey() +
+      scale_y_continuous(expand = c(0, 0))
 ```
 
 ![](README_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
@@ -486,6 +497,47 @@ anim_can = tm_shape(canada) + tm_polygons(col = "lightblue") + tm_shape(carto_no
 ```
 
 ![](canadawindnr3.gif)
+
+## Do manufactureres have a province “preference”?
+
+**By Sylvi Rzepka**
+
+``` r
+library(ggplot2)
+library(dplyr)
+library(viridis)
+```
+
+    ## Loading required package: viridisLite
+
+``` r
+wind2 <- wind_turbine %>%
+  filter(
+    province_territory == "Alberta" |
+      province_territory == "Ontario" |
+      province_territory == "Quebec"
+  ) %>%
+  mutate(manufacturer_fct = as.factor(manufacturer)) %>%
+  mutate(manufacturer_fct_o = fct_lump_min(manufacturer_fct, 19)) %>%
+  count(province_territory, manufacturer_fct_o)
+
+
+ggplot(wind2,
+         aes(fill = manufacturer_fct_o, x = n, y = province_territory)) +
+  geom_bar(stat = "identity") +
+  labs(
+    x = NULL,
+    y = "Province",
+    color = NULL,
+    title = "Manufacturers by Province"
+  ) +
+  scale_fill_viridis(discrete = T, direction = -1) +
+  theme_minimal() +
+  theme(legend.title = element_blank(),
+        legend.position = "bottom")
+```
+
+![](README_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
 
 ## A classic bar plot
 
