@@ -568,13 +568,14 @@ wind_turbine <- readr::read_csv('https://raw.githubusercontent.com/rfordatascien
 ``` r
 wind_capacity <- wind_turbine  %>%
   group_by(province_territory) %>%
-  summarize(project_capacity_sum = sum(total_project_capacity_mw)) %>%
-  filter(project_capacity_sum > 50)
+  summarize(project_capacity_mw_sum = sum(total_project_capacity_mw)) %>%
+  filter(project_capacity_mw_sum > 50) %>%
+  mutate(project_capacity_bw_sum = project_capacity_mw_sum / 1000)
 
 ggplot(data=wind_capacity)+
-  geom_col(aes(x = reorder(province_territory, project_capacity_sum), y = project_capacity_sum))+
+  geom_col(aes(x = reorder(province_territory, project_capacity_bw_sum), y = project_capacity_bw_sum))+
   coord_flip()+
-  labs(x="Territory", y="Project capcaity (mw)",size=20)+
+  labs(x="Territory", y="Project capcaity (billion w)",size=20)+
   theme_bw()+
   theme(axis.text.y = element_text(angle = 0, size = 10,
                                    vjust = 0.5))+
@@ -586,4 +587,4 @@ ggplot(data=wind_capacity)+
                                     vjust = 0.5))
 ```
 
-![](README_files/figure-gfm/bar_plot_martin_wong.png)<!-- -->
+![](README_files/figure-gfm/bar_plot_martin_w.png)<!-- -->
