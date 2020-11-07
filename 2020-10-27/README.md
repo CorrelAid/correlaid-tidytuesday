@@ -555,3 +555,35 @@ wind_turbine %>% ggplot(aes(x= rotor_diameter_m, y= hub_height_m, color= provinc
 ```
 
 ![](README_files/figure-gfm/plot-heba-1.png)<!-- -->
+
+## A classic horizontal bar plot
+
+**By Martin Wong**
+
+``` r
+library(ggplot2)
+wind_turbine <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-10-27/wind-turbine.csv')
+```
+
+``` r
+wind_capacity <- wind_turbine  %>%
+  group_by(province_territory) %>%
+  summarize(project_capacity_sum = sum(total_project_capacity_mw)) %>%
+  filter(project_capacity_sum > 50)
+
+ggplot(data=wind_capacity)+
+  geom_col(aes(x = reorder(province_territory, project_capacity_sum), y = project_capacity_sum))+
+  coord_flip()+
+  labs(x="Territory", y="Project capcaity (mw)",size=20)+
+  theme_bw()+
+  theme(axis.text.y = element_text(angle = 0, size = 10,
+                                   vjust = 0.5))+
+  theme(axis.text.x = element_text(angle = 0, size = 10,
+                                   vjust = 0.5))+
+  theme(axis.title.y = element_text(angle = 0, size = 14,
+                                   vjust = 0.5))+
+  theme(axis.title.x = element_text(angle = 0, size = 14,
+                                    vjust = 0.5))
+```
+
+![](README_files/figure-gfm/bar_plot_martin_wong.png)<!-- -->
