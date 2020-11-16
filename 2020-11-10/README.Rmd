@@ -6,7 +6,7 @@ editor_options:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, fig.showtext = T, fig.retina = 1)
 library(fontawesome)
 library(tidytuesdayR)
 ```
@@ -107,6 +107,16 @@ theme(text = element_text(family = "Andale Mono"), legend.position = "none", # c
 plot5
 #ggsave("callMeMobile3.png")
 ```
+
+## Static No. 3
+**By Cédric Scherer**
+
+![](https://raw.githubusercontent.com/Z3tt/TidyTuesday/master/plots/2020_46/2020_46_HistoricalPhones.png)
+
+Code on [GitHub](https://github.com/Z3tt/TidyTuesday/blob/master/R/2020_46_HistoricalPhones.Rmd)
+
+<blockquote class="twitter-tweet"><p lang="en" dir="ltr"><a href="https://twitter.com/hashtag/TidyTuesday?src=hash&amp;ref_src=twsrc%5Etfw">#TidyTuesday</a> Week 2020/46 📱 Mobile Phone Subscriptions<br><br>An area chart showing mobile subscriptions per 100 people by continent and region over time. Data by <a href="https://twitter.com/OurWorldInData?ref_src=twsrc%5Etfw">@OurWorldInData</a>.<br> <a href="https://twitter.com/hashtag/rstats?src=hash&amp;ref_src=twsrc%5Etfw">#rstats</a> <a href="https://twitter.com/hashtag/ggplot2?src=hash&amp;ref_src=twsrc%5Etfw">#ggplot2</a> <a href="https://twitter.com/hashtag/tidyverse?src=hash&amp;ref_src=twsrc%5Etfw">#tidyverse</a> <a href="https://twitter.com/hashtag/r4ds?src=hash&amp;ref_src=twsrc%5Etfw">#r4ds</a> <a href="https://twitter.com/hashtag/dataviz?src=hash&amp;ref_src=twsrc%5Etfw">#dataviz</a> <a href="https://twitter.com/hashtag/daatviz?src=hash&amp;ref_src=twsrc%5Etfw">#daatviz</a> <a href="https://t.co/GRgOrwiZHK">pic.twitter.com/GRgOrwiZHK</a></p>&mdash; Cédric Scherer (@CedScherer) <a href="https://twitter.com/CedScherer/status/1327026541675614208?ref_src=twsrc%5Etfw">November 12, 2020</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script> 
+
 
 Now, let's hop on the Gif train! `r emo::ji("steam_locomotive")` `r emo::ji("steam_locomotive")` `r emo::ji("steam_locomotive")`
 
