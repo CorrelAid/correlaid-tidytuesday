@@ -52,8 +52,6 @@ ggplot(combined, aes(x=year, y=subs, color=as.factor(gdp_cat))) +
   scale_y_continuous(breaks = seq(0, 125, by = 25), limits = c(0, 130))
 ```
 
-    ## Warning: Removed 201 rows containing non-finite values (stat_smooth).
-
 ![](README_files/figure-gfm/thomas-1.png)<!-- -->
 
 ## Static No. 2
@@ -143,13 +141,47 @@ plot5
 
     ## Picking joint bandwidth of 0.0558
 
-    ## Warning: Removed 45 rows containing non-finite values (stat_density_ridges).
-
 ![](README_files/figure-gfm/sylvi-1.png)<!-- -->
 
 ``` r
 #ggsave("callMeMobile3.png")
 ```
+
+## Static No. 3
+
+**By Cédric Scherer**
+
+![](https://raw.githubusercontent.com/Z3tt/TidyTuesday/master/plots/2020_46/2020_46_HistoricalPhones.png)
+
+Code on
+[GitHub](https://github.com/Z3tt/TidyTuesday/blob/master/R/2020_46_HistoricalPhones.Rmd)
+
+<blockquote class="twitter-tweet">
+
+<p lang="en" dir="ltr">
+
+<a href="https://twitter.com/hashtag/TidyTuesday?src=hash&amp;ref_src=twsrc%5Etfw">\#TidyTuesday</a>
+Week 2020/46 📱 Mobile Phone Subscriptions<br><br>An area chart showing
+mobile subscriptions per 100 people by continent and region over time.
+Data by
+<a href="https://twitter.com/OurWorldInData?ref_src=twsrc%5Etfw">@OurWorldInData</a>.<br>
+<a href="https://twitter.com/hashtag/rstats?src=hash&amp;ref_src=twsrc%5Etfw">\#rstats</a>
+<a href="https://twitter.com/hashtag/ggplot2?src=hash&amp;ref_src=twsrc%5Etfw">\#ggplot2</a>
+<a href="https://twitter.com/hashtag/tidyverse?src=hash&amp;ref_src=twsrc%5Etfw">\#tidyverse</a>
+<a href="https://twitter.com/hashtag/r4ds?src=hash&amp;ref_src=twsrc%5Etfw">\#r4ds</a>
+<a href="https://twitter.com/hashtag/dataviz?src=hash&amp;ref_src=twsrc%5Etfw">\#dataviz</a>
+<a href="https://twitter.com/hashtag/daatviz?src=hash&amp;ref_src=twsrc%5Etfw">\#daatviz</a>
+<a href="https://t.co/GRgOrwiZHK">pic.twitter.com/GRgOrwiZHK</a>
+
+</p>
+
+— Cédric Scherer (@CedScherer)
+<a href="https://twitter.com/CedScherer/status/1327026541675614208?ref_src=twsrc%5Etfw">November
+12, 2020</a>
+
+</blockquote>
+
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 
 Now, let’s hop on the Gif train\! 🚂 🚂 🚂
 
