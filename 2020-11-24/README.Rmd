@@ -2,7 +2,8 @@
 title: "Washington Trails 🥾"
 author: "Frie"
 date: "11/24/2020"
-output: html_document
+output: github_document
+always_allow_html: true
 ---
 
 ```{r setup, include=FALSE}
