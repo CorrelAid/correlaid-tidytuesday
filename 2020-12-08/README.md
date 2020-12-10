@@ -302,9 +302,10 @@ ggplot(womenn, aes(x=category, y= country)) +
 
 ## Countries in popcircles!
 
-**By Andreas Neumann** using the popcircle package: -
-<https://github.com/rCarto/popcircle> -
-<https://rgeomatic.hypotheses.org/1780>
+**By Andreas Neumann** using the popcircle package:
+
+-   <https://github.com/rCarto/popcircle>
+-   <https://rgeomatic.hypotheses.org/1780>
 
 ``` r
 library(tidyverse)
@@ -317,16 +318,6 @@ url<-"https://download2.exploratory.io/maps/world.zip"
 download.file(url, dest="world.zip", mode="wb") 
 unzip("world.zip", exdir = "world")
 worldgeo <- sf::st_read("world/world.geojson")
-```
-
-    ## Reading layer `world' from data source `/Users/frie/dev/correlaid/websites/correlaid-tidytuesday/2020-12-08/world/world.geojson' using driver `GeoJSON'
-    ## Simple feature collection with 199 features and 7 fields
-    ## geometry type:  MULTIPOLYGON
-    ## dimension:      XY
-    ## bbox:           xmin: -169 ymin: -55.5245 xmax: 180 ymax: 83.6135
-    ## geographic CRS: WGS 84
-
-``` r
 names(worldgeo)[1]<-"country"
 women <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-12-08/women.csv')
 ```

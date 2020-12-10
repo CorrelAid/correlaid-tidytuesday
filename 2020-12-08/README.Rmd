@@ -215,10 +215,11 @@ ggplot(womenn, aes(x=category, y= country)) +
 ## Countries in popcircles!
 **By Andreas Neumann**
 using the popcircle package:
+
 - https://github.com/rCarto/popcircle
 - https://rgeomatic.hypotheses.org/1780
 
-```{r andreas-setup, message=FALSE}
+```{r andreas-setup, eval=FALSE, message=FALSE}
 library(tidyverse)
 library(cartography)
 library(remotes)
