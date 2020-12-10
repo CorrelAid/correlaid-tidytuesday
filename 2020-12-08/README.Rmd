@@ -1,7 +1,8 @@
 ---
 title: "Women of 2020 ♀️"
 output: github_document
-always_allow_html: true
+editor_options: 
+  chunk_output_type: console
 ---
 
 ```{r setup, include=FALSE}
