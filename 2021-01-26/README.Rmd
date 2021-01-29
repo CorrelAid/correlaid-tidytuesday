@@ -24,7 +24,7 @@ plastics <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/t
 
 ```
 
-```{r fig.width=12, fig.height== 15}
+```{r fig.width=12, fig.height=9}
 ###load data and transform into long data set###
 b<-subset(plastics, year==2019 & parent_company=="Grand Total")
 tall <- b %>% gather(key = total, value = cat, empty:pvc)
@@ -81,4 +81,4 @@ by **Ihaddaden M. EL Fodil**[`r fa("twitter", fill = "#1da1f2")`](https://twitte
 
 <blockquote class="twitter-tweet"><p lang="en" dir="ltr">My contribution to this week <a href="https://twitter.com/hashtag/TidyTuesday?src=hash&amp;ref_src=twsrc%5Etfw">#TidyTuesday</a> using ggplot2 and CSS Grid for the layout. <a href="https://twitter.com/hashtag/RStats?src=hash&amp;ref_src=twsrc%5Etfw">#RStats</a> <a href="https://t.co/N6xRAXLO81">pic.twitter.com/N6xRAXLO81</a></p>&mdash; Ihaddaden M. EL Fodil, Ph.D (@moh_fodil) <a href="https://twitter.com/moh_fodil/status/1354184005030211586?ref_src=twsrc%5Etfw">January 26, 2021</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script> 
 
-Check out the full page [here](https://tidytuesday.correlaid.org/fodil.html) and the source code in this [GitHub repository](https://github.com/feddelegrand7/plast).
+Check out the full page [here](https://tidytuesday.correlaid.org/2021-01-26/fodil.html) and the source code in this [GitHub repository](https://github.com/feddelegrand7/plast).

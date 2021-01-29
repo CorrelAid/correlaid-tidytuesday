@@ -83,7 +83,7 @@ tall%>%
         title = element_text(colour = "white"))
 ```
 
-![](README_files/figure-gfm/fig.height==15-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-1-1.png)<!-- -->
 
 ## Using CSS grids for Rmd layout
 
@@ -105,5 +105,6 @@ using ggplot2 and CSS Grid for the layout.
 <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 
 Check out the full page
-[here](https://tidytuesday.correlaid.org/fodil.html) and the source code
-in this [GitHub repository](https://github.com/feddelegrand7/plast).
+[here](https://tidytuesday.correlaid.org/2021-01-26/fodil.html) and the
+source code in this [GitHub
+repository](https://github.com/feddelegrand7/plast).
