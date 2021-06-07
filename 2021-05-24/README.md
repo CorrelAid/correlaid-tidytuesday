@@ -259,3 +259,5 @@ ggplot(temp, aes(x=time, y=track, color=record, shape=shortcut)) +
 ggsave("C:/Users/Patrizia/Data/Data Science/TidyTuesday/mario_kart_2021.png",
        width = 12, height = 8)
 ``` 
+
+![](https://github.com/PatMaier92/correlaid-tidytuesday/blob/main/2021-05-24/mario_kart_2021.png)
