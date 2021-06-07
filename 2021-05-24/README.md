@@ -159,3 +159,103 @@ ggsave(here::here("plots", "2021_22", "2021_22_MarioKart.png"),
 ```
 
 ![](https://raw.githubusercontent.com/Z3tt/TidyTuesday/master/plots/2021_22/2021_22_MarioKart.png)
+
+
+##### TidyTuesday 2021-05-27 #####
+###         Mario Kart         ###
+### Author: Patrizia Maier     ###
+
+``` r
+# get packages 
+library(tidyverse)
+library(lubridate)
+library(Rokemon)
+library(ggtext)
+library(ggrepel)
+library(extrafont)
+# import_pokefont() # only once
+# font_import() # only once 
+loadfonts(device = "win", quiet = TRUE) # every time 
+# windowsFonts() # to check available options 
+
+
+
+# get tidy tuesday data 
+tuesdata <- tidytuesdayR::tt_load('2021-05-25')
+records <- tuesdata$records
+drivers <- tuesdata$drivers
+
+
+# tidy data 
+temp <- records %>% 
+  filter(type=="Three Lap") %>% 
+  mutate(year=year(date),
+         shortcut=fct_recode(shortcut, sc="Yes", nosc="No")) %>% 
+  group_by(track, shortcut) %>% 
+  summarize(first_rec_time=as.character(max(time)),
+            first_rec_player=as.character(player[which.max(time)]),
+            first_rec_year=as.character(year[which.max(time)]),
+            latest_rec_time=as.character(min(time)),
+            latest_rec_player=as.character(player[which.min(time)]),
+            latest_rec_year=as.character(year[which.min(time)])) %>%
+  pivot_longer(
+    cols=-c(track, shortcut),
+    names_to = c("record", "category"),
+    names_sep = "_rec_",
+    values_to = "value"
+  ) %>% 
+  pivot_wider(
+    names_from = "category"
+  ) %>% 
+  mutate(shortcut=as.factor(shortcut),
+         record=as.factor(record),
+         shortcut_record=interaction(shortcut, record, sep="_"),
+         time=as.numeric(time),
+         year=as.integer(year),
+         cup=as.factor(case_when(track %in% c("Luigi Raceway", "Moo Moo Farm", "Koopa Troopa Beach", "Kalimari Desert")  ~ "Mushroom Cup",
+                                 track %in% c("Toad's Turnpike", "Frappe Snowland", "Choco Mountain", "Mario Raceway") ~ "Flower Cup",
+                                 track %in% c("Wario Stadium", "Sherbet Land", "Royal Raceway", "Bowser's Castle") ~ "Star Cup",
+                                 track %in% c("D.K.'s Jungle Parkway" , "Yoshi Valley" , "Banshee Boardwalk", "Rainbow Road") ~ "Special Cup"
+                                 )),
+         cup=fct_relevel(cup, "Mushroom Cup", "Flower Cup", "Star Cup", "Special Cup"))
+                       
+
+# plotting 
+ggplot(temp, aes(x=time, y=track, color=record, shape=shortcut)) + 
+  geom_point(size=4) +
+  facet_wrap(~ cup, nrow=4, strip.position = "right", scales = "free_y", labeller = label_wrap_gen(width=8)) + 
+  geom_text_repel(aes(label=player), size=2.5, color="black") +
+  scale_y_discrete(limits=rev) + 
+  scale_color_manual(values=c("#c51921", "#2527bf"), labels=c("first record", "latest record")) +  
+  scale_shape_manual(values=c(19, 17), labels=c("no shortcut", "shortcut")) +
+  coord_cartesian(clip="off") + 
+  theme_minimal() + 
+  guides(colour = guide_legend(order = 1), shape = guide_legend(order = 2)) + 
+  theme(plot.title=element_markdown(size=20),
+        plot.subtitle=element_text(size=10),
+        plot.title.position = "plot",
+        plot.caption = element_text(size=7),
+        plot.caption.position = "plot",
+        plot.margin = unit(c(1,1,0.5,1), "cm"),
+        plot.background = element_rect(fill="#c1bebf"),
+        panel.grid.major.x = element_blank(), 
+        panel.grid.major.y = element_line(colour = "#726d6f", linetype = 2),
+        panel.grid.minor = element_blank(),
+        panel.spacing = unit(0.5, "lines"),
+        strip.placement = "outside",
+        strip.background = element_rect(fill = "#d7751a"),
+        strip.text.y = element_text(angle = 0, color = "white"),
+        legend.position = "top",
+        legend.title = element_blank(),
+        text = element_text(family = "pokemon-font" , size=9), 
+        axis.text = element_text(size=8)) + 
+  labs(title="<span style = 'color:#e3e31c;'>Mario Kart</span><span style = 'color:#e21d26;'> 64</span>",
+       subtitle="\nWorld records for Three Laps in seconds",
+       caption="Dataviz: Patrizia Maier | Data: Mario Kart Word Records & Benedikt Claus",
+       x="",
+       y="")
+
+# save
+ggsave("C:/Users/Patrizia/Data/Data Science/TidyTuesday/mario_kart_2021.png",
+       width = 12, height = 8)
+``` 
