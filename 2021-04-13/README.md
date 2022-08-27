@@ -1,6 +1,6 @@
 ### US Post Offices ✉️
 
-## Static No. 1
+## Plot No. 1
 
 **By Sylvi Rzepka** (@SylviRz)
 <a href="https://twitter.com/SylviRz/status/1384223728960110601"> April
@@ -9,7 +9,7 @@
 ![](README_files/figure-gfm/sylvi-rzepka.jpg)<!-- -->
 
 
-## Static No. 2
+## Plot No. 2
 
 **By Andreas Neumann**
 
