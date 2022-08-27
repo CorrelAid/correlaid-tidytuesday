@@ -13,4 +13,5 @@
 
 **By Andreas Neumann**
 
-![](https://github.com/anneumann1/CorrelAid/blob/master/US%20Post-Offices/Rplot12.png)
+![](README_files/figure-gfm/andreas.neumann.png)<!-- -->
+
