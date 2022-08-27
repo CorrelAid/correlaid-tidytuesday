@@ -8,7 +8,7 @@ Repository for collecting analyses and results for [tidytuesday](https://github.
 - [2020-11-10: Historical Phones ☎️📱](https://correlaid.github.io/correlaid-tidytuesday/2020-11-10/)
 - [2020-11-24: Washington Trails 🥾](https://correlaid.github.io/correlaid-tidytuesday/2020-11-24/)
 - [2020-12-08: Women of 2020 ♀](https://correlaid.github.io/correlaid-tidytuesday/2020-12-08/)
-- 2020-12-22:	Big Mac Index (no post, but there was a meetup!)
+- [2020-12-22:	Big Mac Index 🍔](https://correlaid.github.io/correlaid-tidytuesday/2020-12-22/)
 - 2021-01-12: Art Collections (no post, but we met!)
 - [2021-01-26: Plastic Pollution 🚮](https://correlaid.github.io/correlaid-tidytuesday/2021-01-26/)
 - [2021-02-23: Employment and Earnings 💸](https://correlaid.github.io/correlaid-tidytuesday/2021-02-23/)
