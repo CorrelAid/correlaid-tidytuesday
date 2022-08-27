@@ -2,7 +2,11 @@
 
 ## Static No. 1
 
-**By Sylvi Rzepka**
+**By Sylvi Rzepka** (@SylviRz)
+<a href="https://twitter.com/SylviRz/status/1384223728960110601"> April
+19, 2021 </a>
+
+
 
 ![](https://github.com/CorrelAid/correlaid-tidytuesday/blob/main/2021-04-13/sylvi-rzepka.jpg)
 
