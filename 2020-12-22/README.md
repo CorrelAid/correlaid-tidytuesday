@@ -13,9 +13,19 @@
 
 ![](README_files/figure-gfm/big-mac-andreas-neumann.png)<!-- -->
 
-## Plot No.2
+## Plot No. 2
 **By Long Nguyen**
 
 
 ![](README_files/figure-gfm/big-mac-capita-1-long.png)<!-- -->
 
+## Plot No. 3
+**By Sylvi Rzepka**
+
+![](README_files/figure-gfm/sylvi-big-mac.png)<!-- -->
+
+## Plot No. 4
+**By Frie Preu**
+
+
+![](README_files/figure-gfm/image-frie.png)<!-- -->
