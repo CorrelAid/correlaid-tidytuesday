@@ -15,13 +15,13 @@ The Big Mac index 🍔
 ![](README_files/figure-gfm/big-mac-andreas-neumann.png)<!-- -->
 
 # Plot No. 2
-**By Long Nguyen**
+**By Long Nguyen** (@long39ng)
 
 
 ![](README_files/figure-gfm/big-mac-capita-1-long.png)<!-- -->
 
 # Plot No. 3
-**By Sylvi Rzepka**
+**By Sylvi Rzepka** (@SylviRz)
 
 ![](README_files/figure-gfm/sylvi-big-mac.png)<!-- -->
 
