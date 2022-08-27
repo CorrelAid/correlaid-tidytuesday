@@ -23,7 +23,7 @@ The Big Mac index 🍔
 # Plot No. 3
 **By Sylvi Rzepka** (@SylviRz)
 
-![](README_files/figure-gfm/sylvi-big-mac.png)<!-- -->
+![](README_files/figure-gfm/sylvi-big-mac.jpg)<!-- -->
 
 # Plot No. 4
 **By Frie Preu**
