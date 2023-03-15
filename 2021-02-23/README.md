@@ -239,21 +239,21 @@ for(i in 1:25) {
 
 **By Long Nguyen**
 
-```{r setup, include=FALSE}
+```r
 knitr::opts_chunk$set(echo = TRUE, collapse = TRUE, comment = "#>")
 ```
 
-```{r load, message=FALSE}
+```r
 library(tidyverse)
 library(ragg)
 ```
 
-```{r data}
+```r
 earn <- "https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2021/2021-02-23/earn.csv" %>% 
   read_csv(col_types = "cccciiii")
 ```
 
-```{r generate}
+```r
 rose <- function(petals, angle = 0, scale = 1) {
   rad <- pi * angle / 180
   df <- data.frame(theta = seq(0, (petals - 2) * pi, by = pi / 180)) %>% 
@@ -281,7 +281,7 @@ roses <- earn %>%
   group_split(quarter_label)
 ```
 
-```{r frames, warning=FALSE}
+```r
 agg_png("figs/tmp/frame-%02d.png",
         width = 1294, height = 800, res = 96, bg = "#1A1D21")
 walk(roses, ~ print({
@@ -320,7 +320,7 @@ walk(roses, ~ print({
 dev.off()
 ```
 
-```{r roses-gif}
+```r
 system("convert -delay 25 figs/tmp/*.png figs/roses.gif")
 fs::dir_delete("figs/tmp/")
 ```
