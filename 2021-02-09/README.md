@@ -441,3 +441,56 @@ cowplot::ggdraw(figuretotal) +
 ```
 
 ![](https://raw.githubusercontent.com/anneumann1/CorrelAid/master/Urban%20Institute/Rplot17.png)
+
+# Plot No.3
+
+**By Sarah Wenzel**
+
+```r
+library(tidytuesdayR)
+library(tidyverse)
+library(grid)
+```
+```r
+tuesdata <- tidytuesdayR::tt_load('2021-02-09')
+student_debt <- tuesdata$student_debt
+income_distribution <- tuesdata$income_distribution
+```
+```r
+p1 <- ggplot(data=student_debt, aes(x=year, y=loan_debt, group=race)) +
+  geom_line(aes(colour=race), size = 1.1)+
+  theme_minimal()+
+  scale_color_manual(values = c("#0081A7", "#F35B04", "#008000"))+
+  labs(x="Year", y= "Student Loan Debt", title= "Student Loan Debt Development", colour='Race')
+
+income_dist_reduced <-  income_distribution %>%
+  subset(race == 'Black Alone' | race == 'White Alone' | race == 'Hispanic (Any Race)' & year <= 2016, select= -c(income_bracket, income_distribution)) %>%
+  distinct(year, race, .keep_all = T) %>%
+  mutate(race = case_when(
+    race == 'Black Alone' ~ 'Black', 
+    race == 'White Alone' ~ 'White',
+    race == 'Hispanic (Any Race)' ~ 'Hispanic',
+    TRUE ~ as.character(race)
+    ))
+ ```
+ ```r
+# I originally wanted to have both plots in one, but they were clearer when separate,
+# so I just used combo to plot median income in a separate graph
+```
+```r
+combo <- merge(student_debt,income_dist_reduced, by=c("year","race"),all.x = T)
+```
+```r
+p2 <- ggplot(data=combo, aes(x=year, y=income_median, group=race)) +
+  geom_line(aes(colour=race), size = 1.1)+
+  theme_minimal()+
+  scale_color_manual(values = c("#0081A7", "#F35B04", "#008000"))+
+  labs(x="Year", y= "Median Annual Income", title= "Median Annual Income Development", colour='Race')
+```
+
+```r
+grid.newpage()
+grid.draw(rbind(ggplotGrob(p1), ggplotGrob(p2), size = "last"))
+```
+
+![](README_files/figure-gfm/student_loan_debt_and_median_income_sarah_wenzel.png)
