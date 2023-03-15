@@ -141,3 +141,49 @@ artwork_by_year %>%
 **By Andreas Neumann**
 
 ![](https://raw.githubusercontent.com/anneumann1/CorrelAid/master/Tate%20Art/Rplot53.png)
+
+# Plot No. 4
+
+**By Maud Grol**
+
+```r
+library(tidytuesdayR)
+library(tidyverse)
+```
+```r
+## Loading data
+tt_data <- tt_load("2021-01-12")
+artists <- tt_data[["artists"]]
+artwork <- tt_data[["artwork"]]
+```
+
+```r
+artwork <- artwork %>% rename(artworkId = id)
+data <- merge(artists, artwork, by.x="id", by.y = "artistId")
+data$gender.fctr <- factor(data$gender, levels = c("Male", "Female"))
+```
+```r
+# Gender balance in acquired work
+artwork_gender <- data %>% group_by(acquisitionYear) %>% count(gender.fctr) %>% filter(!is.na(gender.fctr), acquisitionYear >=1900) %>% 
+            ggplot() + geom_bar(aes(y = n, x = acquisitionYear, fill = gender.fctr), stat="identity", position = "stack", width = 0.9) + 
+            coord_cartesian(ylim=c(0,3000)) + labs(y = "Number of artworks acquired", x = "Year", caption = "Data: Tate | Visualisation: @MaudGrol") + 
+            ggtitle("Gender representation in artwork acquired by the Tate (1900-2013)") + scale_x_continuous(limits = c(1900,2013), expand = c(0.005, 0.005)) + 
+            scale_y_continuous(expand = c(0, 0)) + scale_fill_viridis_d(name = "Artists' gender", labels = c("male", "female")) + 
+            theme_classic(base_size=12) + theme(axis.text=element_text(size=12, colour = "black"), plot.title = element_text(hjust = 0.5))
+
+artwork_gender
+```
+```r
+# Gender balance in artists whose work is acquired
+acq_artists_gender <- data %>% distinct_at(., vars(acquisitionYear,name), .keep_all = TRUE) %>% group_by(acquisitionYear) %>%
+            count(gender.fctr) %>% filter(!is.na(gender.fctr), acquisitionYear >=1900) %>%
+            ggplot() + geom_bar(aes(y = n, x = acquisitionYear, fill = gender.fctr), stat="identity", position = "stack", width = 0.9) + 
+            labs(y = "Number of artists who had artwork acquired", x = "Year", caption = "Data: Tate | Visualisation: @MaudGrol") + ggtitle("Gender disparity in representation of artists (1900-2013)") + 
+            scale_x_continuous(limits = c(1900,2013), expand = c(0.005, 0.005)) + scale_y_continuous(expand = c(0, 0)) + 
+            scale_fill_viridis_d(name = "Artists' gender", labels = c("male", "female")) + theme_classic(base_size=12) + 
+            theme(axis.text=element_text(size=12, colour = "black"), plot.title = element_text(hjust = 0.5))
+
+acq_artists_gender 
+```
+
+![](README_files/figure-gfm/acquired_work_gender_maud_grol.png)
