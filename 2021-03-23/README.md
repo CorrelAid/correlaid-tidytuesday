@@ -13,6 +13,11 @@ UN VOTES 🇺🇳
 
 ![](README_files/figure-gfm/all_plots.png)
 
+# Static No.2
+
+**By Liam Bailey**
+
+![](README_files/figure-gfm/un_votes_liam.png)
 
 # Shiny App
 
@@ -20,4 +25,4 @@ UN VOTES 🇺🇳
 
 https://long39ng.shinyapps.io/unvotes-agreement-map/ 
 
-![](README_files/figure-gfm/un-votes-shiny-app.png)
+![](README_files/figure-gfm/un-votes-shiny-app-long.png)
