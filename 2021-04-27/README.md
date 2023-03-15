@@ -1,6 +1,10 @@
 CEO Departures
 ================
 
+# Plot No. 1 
+
+**By Patrizia Maier**
+
 ```r
 # get packages 
 library(tidyverse)
@@ -107,10 +111,6 @@ p1 <- ggplot(data_gender, aes(fill = final_gender_guess, values = n)) +
        subtitle="highlighting **<span style = 'color:#ef8f10;'>female</span>** CEO's",
        caption = "Dataviz: Patrizia Maier | Data: Gentry et al. 2021 | Firms from S&P 1500 index") 
 ```
-
-# Plot No. 1 
-
-**By Patrizia Maier**
 
 ![](README_files/figure-gfm/ceo_gender_2021.png)
 
