@@ -178,6 +178,8 @@ class(bigmac)
 str(bigmac)
 summary(bigmac$date)
 table(bigmac$name)
+```
+
 ```r
 #loading world map data
 data("World") 
@@ -217,7 +219,6 @@ head(bigmac_shapedata)
 ```r
 # Plotting 
 my_colors = carto_pal(7, "Fall")
-
 map1<-tm_shape(bigmac_shapedata) +
   tm_fill(title="Legend: \nUndervalued (<0) \nOvervalued (>0) \nlocal currency", 
           c("usd_adjusted", "eur_adjusted", "cny_adjusted", "jpy_adjusted"),
