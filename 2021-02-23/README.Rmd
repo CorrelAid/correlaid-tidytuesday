@@ -245,9 +245,3 @@ for(i in 1:25) {
 
 ![](https://raw.githubusercontent.com/Z3tt/TidyTuesday/master/plots/2021_09/2021_09_Employment_Total.png)
 
-
-# Plot No. 2
-
-**By Long Nguyen**
-
-![](README_files/figure-gfm/roses.gif)
