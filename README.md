@@ -16,4 +16,5 @@ Repository for collecting analyses and results for [tidytuesday](https://github.
 - [2021-03-09: Bechdel Test 📽️](https://correlaid.github.io/correlaid-tidytuesday/2021-03-09/)
 - [2021-03-23: UN Votes 🇺🇳](https://correlaid.github.io/correlaid-tidytuesday/2021-03-23)
 - [2021-04-13: US Post Offices ✉️](https://correlaid.github.io/correlaid-tidytuesday/2021-04-13/)
+- [2021-04-27: CEO Departures 💰](https://correlaid.github.io/correlaid-tidytuesday/2021-04-27/)
 - [2021-05-24: Mario Kart 64 🍄](https://correlaid.github.io/correlaid-tidytuesday/2021-05-24/)
