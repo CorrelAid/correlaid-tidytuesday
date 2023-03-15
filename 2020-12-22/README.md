@@ -162,6 +162,88 @@ big_mac_capita %>%
 # Plot No. 3
 **By Sylvi Rzepka** (@SylviRz)
 
+```r
+library(ggplot2)
+library(tidytuesdayR)
+library(tidyverse)
+library(tmap)
+library(sf) # for worldmap data
+library(dplyr)
+library(rcartocolor)
+```
+```r
+# Read in as a dataframe
+bigmac <- as.data.frame(tt_load('2020-12-22')$"big-mac")
+class(bigmac)
+str(bigmac)
+summary(bigmac$date)
+table(bigmac$name)
+```r
+#loading world map data
+data("World") 
+```
+```r
+######data prep
+#Extracting the Eurozone
+eurozone<- bigmac %>%
+  filter(date=="2020-07-01") %>%
+  filter(iso_a3=="EUZ") %>%
+  dplyr::select(!iso_a3) %>%
+  #duplicating 19x one line for each euro zone country
+  slice(rep(1:n(), each=19))
+  
+#### iso_a3 for all eurozone countries  
+eurozone$iso_a3<-c("AUT", "BEL", "CYP", "EST", "FIN", "FRA", "DEU", "GRC",
+                   "IRL", "ITA", "LUX", "LVA", "LTU", "MLT", "NLD",
+                   "PRT", "SVK", "SVN", "ESP")
+```
+```r
+# binding eurozone to bigmac data
+bigmac2<-rbind(bigmac, eurozone)
+
+bigmac_prep <- bigmac2 %>%
+  #filtering for last date
+  filter(date=="2020-07-01")%>%
+  #dropping aggregated Euro zone line
+  filter(iso_a3!="EUZ") %>%
+  # keeping only a few vars, "..._adjusted" is the GPD adjusted over/undervaluation with respect to the currency
+  dplyr::select(iso_a3, usd_raw, gdp_dollar, usd_adjusted, eur_adjusted, cny_adjusted, jpy_adjusted) 
+```
+```r
+#Joining the population to the shapefile data from world
+bigmac_shapedata <- merge(World, bigmac_prep, by.x="iso_a3", by.y="iso_a3", all.x=TRUE)
+head(bigmac_shapedata)
+```
+```r
+# Plotting 
+my_colors = carto_pal(7, "Fall")
+
+map1<-tm_shape(bigmac_shapedata) +
+  tm_fill(title="Legend: \nUndervalued (<0) \nOvervalued (>0) \nlocal currency", 
+          c("usd_adjusted", "eur_adjusted", "cny_adjusted", "jpy_adjusted"),
+          midpoint=0,
+          breaks=c(-.5, -.3, -.15, 0, 0.001, .15, .3, .5, .9),
+          palette=my_colors,
+          colorNA="grey95",
+          textNA = "No GDP data \nor McDonald's") + #c("usd_raw", "eur_raw", "cny_raw", "jpy_raw")
+  tm_facets(sync = TRUE, ncol = 2, nrow=2,) +
+  tm_layout(main.title="Adjusted Big Mac Index for different base currencies",
+            #main.subtitle="Shows how under- and overevaluation depends on the perspective",
+            title="DataViz by @SylviRz for #TidyTuesday \nData from The Economist",
+            title.size=1,
+            title.position=c("left","BOTTOM"),
+            fontfamily="Andale Mono",
+            legend.outside = TRUE,
+            panel.labels=c("USD base currency", "EUR base currency", "CNY base currency", "JPY base currency"),
+            panel.label.bg.color = my_colors[4],
+            frame=FALSE)
+
+map1
+tmap_save(
+  tm = map1,
+  filename = "bigmacindex_by_currency")
+```
+
 ![](README_files/figure-gfm/sylvi-big-mac.jpg)<!-- -->
 
 # Plot No. 4
