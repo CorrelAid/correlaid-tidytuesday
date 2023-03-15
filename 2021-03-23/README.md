@@ -14,3 +14,4 @@ UN VOTES 🇺🇳
 
 https://long39ng.shinyapps.io/unvotes-agreement-map/ 
 
+![](README_files/figure-gfm/un-votes-shiny-app.png)
