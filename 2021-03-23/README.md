@@ -16,7 +16,7 @@ UN VOTES 🇺🇳
 
 # Shiny App
 
-**By Long Nguyen** (https://twitter.com/long39ng)
+**By Long Nguyen**
 
 https://long39ng.shinyapps.io/unvotes-agreement-map/ 
 
