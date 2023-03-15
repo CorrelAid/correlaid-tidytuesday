@@ -1,3 +1,7 @@
+Wealth and income over time 🏚️
+================
+
+
 # Plot No. 1
 
 **By Martin Wong**
