@@ -234,3 +234,21 @@ for(i in 1:25) {
 ```
 
 ![](https://raw.githubusercontent.com/Z3tt/TidyTuesday/master/plots/2021_09/2021_09_Employment_Total.png)
+
+# Plot No. 2
+
+**By Long Nguyen**
+
+![](README_files/figure-gfm/roses.gif)
+
+# Plot No.3
+
+**By Lisa Reiber**
+
+![](README_files/figure-gfm/lisa-reiber-earnings.png)
+
+# Plot No.4
+
+**By Liam Bailey**
+
+![](README_files/figure-gfm/earn_inequality_liam.png)
