@@ -17,6 +17,6 @@ Bechdel Test 📽️
 
 **By Fodil Ihaddaden**
 
-(https://ihaddaden-fodil.shinyapps.io/Bechdel/)
+https://ihaddaden-fodil.shinyapps.io/Bechdel/
 
 ![](README_files/figure-gfm/Bechdel_fodil_shiny.png)
